@@ -170,42 +170,51 @@ def ajuste_polinomial(xi,yi,grado=2):
     - residuo(lista): arreglo que contiene los residuos, transformado a lista con la función list()
   """
 
+  # Se preparan las variables
   m = grado
-
-  # PROCEDIMIENTO
   xi = np.array(xi)
   yi = np.array(yi)
   n  = len(xi)
 
-  # llenar matriz A y vector B
+  # k es el número de coeficientes necesario para un ajuste polinomial
   k = m + 1
+
+  # La matriz A tiene un tamaño de k*k y está llena de ceros, aquí se guardarán los coeficientes
+  #del sistema de ecuaciones que se usarán para resolver por los coeficientes polinomiales
   A = np.zeros(shape=(k,k),dtype=float)
+
+  # El array B es un array unidimensional de tamaño k lleno de ceros, en este array se guardarán
+  #las constantes del sistema de ecuaciones.
   B = np.zeros(k,dtype=float)
 
+  # El ciclo for anidado calcula e ingresa los elemenos de las matrices A y B basado en los datos 
+  #ingresados (xi e yi) y el grado polinomial deseado (m)
   for i in range(0,k,1):
       for j in range(0,i+1,1):
-          coeficiente = np.sum(xi**(i+j))
-          A[i,j] = coeficiente
+          coeficiente = np.sum(xi**(i+j)) # Calcula la suma de las potencias de xi
+          A[i,j] = coeficiente # Asignar a la matriz A
           A[j,i] = coeficiente
-      B[i] = np.sum(yi*(xi**i))
+      B[i] = np.sum(yi*(xi**i)) # Calcula la suma de productos de yi y xi^i
 
-  # coeficientes, resuelve sistema de ecuaciones
+  # Resuelve el sistema de ecuaciones para obtener los coeficientes
   C = np.linalg.solve(A,B)
 
-  # polinomio
+  # Función polinomial con sympy
   x = sym.Symbol('x')
   f = 0
   fetiq = 0
   for i in range(0,k,1):
-      f = f + C[i]*(x**i)
-      fetiq = fetiq + np.around(C[i],4)*(x**i)
+      f = f + C[i]*(x**i) # Contruye el polinomio simbólico
+      fetiq = fetiq + np.around(C[i],4)*(x**i) # Construye una versión redondeada
 
+  # Convierte el polinomio simbólico a una función llamable
   fx = sym.lambdify(x,f)
-  fi = fx(xi)
+  fi = fx(xi) # Calcula los valores de y ajustados 
 
+  # Se calculan los residuos de la frecuencia
   residuo = np.array(yi)-np.array(fi)
 
-  return list(residuo)
+  return list(residuo) # Se devuelven los residuos como lista
 
 def ajuste_residuos_lineal(tiempo, frecuencia):
   """

@@ -17,10 +17,12 @@ import csv
 
 def limpiarDatos(datos): #Función para limpiar los datos
   """
-    Cumple la función de limpiar listas de datos de datos no numéricos mediante math.isfinite()
+    Cumple la función de limpiar listas de datos de datos 
+    no numéricos mediante math.isfinite()
 
     Parámetros:
-    - datos(lista): lista ingresada por el usuario con datos numéricos
+    - datos(lista): lista ingresada por el usuario con 
+    datos numéricos
 
     Retorna:
     - datosLimpios(lista): lista ingresada sin valores nan
@@ -32,7 +34,8 @@ def limpiarDatos(datos): #Función para limpiar los datos
 
   return datosLimpios
 
-def eliminarDuplicados(tiempo): #se usa después de procesar los datos y limpiar lista tiempo de nans
+def eliminarDuplicados(tiempo): #se usa después de procesar los datos 
+                                #y limpiar lista tiempo de nans
   """
     Elimina los tiempos duplicados de la lista ingresada
 
@@ -40,7 +43,8 @@ def eliminarDuplicados(tiempo): #se usa después de procesar los datos y limpiar
     - tiempo(lista): lista de tiempos ingresada
 
     Retorna:
-    - indicesClean(lista): lista con los índices de los tiempos no duplicados
+    - indicesClean(lista): lista con los índices de los tiempos 
+    no duplicados
   """
   listaClean = []
   indicesClean = []
@@ -205,40 +209,6 @@ def ajuste_polinomial(xi,yi,grado=2):
 
   return list(residuo) # Se devuelven los residuos como lista
 
-def ajuste_residuos_lineal(tiempo, frecuencia):
-  """
-    Ajusta una línea recta a los datos de tiempo y frecuencia, y calcula los residuos.
-
-    Parámetros:
-    - tiempo: array de valores de tiempo.
-    - frecuencia: array de valores de frecuencia.
-
-    Retorna:
-    - residuos: array de residuos (diferencia entre los datos y la tendencia ajustada).
-    - linea_tendencia: array de valores de la recta ajustada (tendencia).
-    - m, b: coeficientes de la recta ajustada (pendiente y el intercepto).
-  """
-  # Convertir las listas de entrada en arrays de numpy (en caso de que no lo sean)
-  arrayTiempo = np.array(tiempo)
-  arrayFrecuencia = np.array(frecuencia)
-
-  # Calcular las sumas necesarias para el sistema de ecuaciones
-  x = np.sum(arrayTiempo)
-  y = np.sum(arrayFrecuencia)
-  xy = np.sum(arrayFrecuencia * arrayTiempo)
-  x2 = np.sum(arrayTiempo ** 2)
-
-  # Calcular la pendiente m y el intercepto b usando las fórmulas del ajuste lineal
-  m = (len(tiempo) * xy - x * y) / (len(tiempo) * x2 - x ** 2)
-  b = (y * x2 - x * xy) / (len(tiempo) * x2 - x ** 2)
-
-  # Ecuación de la recta ajustada
-  linea_tendencia = m * arrayTiempo + b
-
-  # Calcular los residuos (diferencia entre los datos reales y la tendencia ajustada)
-  residuos = arrayFrecuencia - linea_tendencia
-
-  return residuos, m, b
 
 def obtener_glitches_y_tiempos(tiempo, residuos, nombre, paso=1):
   """
@@ -368,7 +338,7 @@ while flag:
           pasoPeaks = input("Ingrese el paso entre peaks: ")
           print()
           try:
-            residuoArchivo, m, b = ajuste_residuos_lineal(tiempoArchivo,frecuenciaArchivo)
+            residuoArchivo = ajuste_polinomial(tiempoArchivo,frecuenciaArchivo, grado=1)
             postGlitches, preGlitches, tiempoGlitchesArchivo, glitchesArchivo = obtener_glitches_y_tiempos(tiempoArchivo, residuoArchivo, nombreArchivo, int(pasoPeaks))
             flag3 = False
             print()

@@ -399,13 +399,13 @@ while flag:
           with open(f"resultados_{nombreArchivo}.csv", mode="w", newline="", encoding="utf-8") as datosFinales:
               escritura = csv.writer(datosFinales)
 
-              escritura.writerow(["PostGlitches[hz]\t", "PreGlitches[hz]\t", "Tiempos[MJD]\t", "Magnitud del Glitch[hz]\n"])
+              escritura.writerow(["PostGlitches[hz]\t", "PreGlitches[hz]\t", "Epoch[MJD]\t", "Magnitud del Glitch[hz]\n"])
               for i in range(len(postGlitches)):
                 escritura.writerow([f"{postGlitches[i]}\t",f"{preGlitches[i]}\t",f"{tiempoGlitchesArchivo[i]}\t",f"{glitchesArchivo[i]}\n"])
 
               datosFinales.close()
 
-          print("Se ha generado un archivo csv con sus resultados!")
+          print("Se ha generado un archivo csv con sus resultados!\n")
 
         else:
           print("Opción inválida, por favor pruebe de nuevo\n")

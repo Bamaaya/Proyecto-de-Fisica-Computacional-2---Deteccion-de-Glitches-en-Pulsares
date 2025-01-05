@@ -245,6 +245,7 @@ def ajuste_residuos_lineal(tiempo, frecuencia):
 def obtener_glitches_y_tiempos(tiempo, residuos, nombre, paso=1):
   """
     Grafica el residuo de los datos frente al tiempo junto a los post y pre glitches encontrados con find_peaks
+    Guarda el gráfico generado como un archivo png
     Busca la magnitud de los glitches y el tiempo en el que ocurren
 
     Parámetros:
@@ -337,6 +338,7 @@ while flag:
       #Try y except para aprueba de errores en caso de dirección inválida
       try:
         #Se lee el archivo y se grafican los datos obtenidos
+        #El gráfico se guarda como un archivo png
         tiempoArchivo, frecuenciaArchivo, incertezasArchivo = leerArchivo(direccion)
         fig, ax = plt.subplots(1,1,figsize=(6,6))
 

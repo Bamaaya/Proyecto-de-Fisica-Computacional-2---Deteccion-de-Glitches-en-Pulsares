@@ -1,4 +1,5 @@
-import sympy as sp
+import numpy as np
+import matplotlib.pyplot as plt
 
 def readFile(path):
     """
@@ -9,7 +10,7 @@ def readFile(path):
 
     Return:
     - freq (list): list that contains the given pulsar's frequecies
-    toa (list): list that contains the time of arrival of each frequency
+    - toa (list): list that contains the time of arrival of each frequency
     - err (list): list that contains something that I suspect is the error of one of the two things above
     """
     file = open(path,"r")
@@ -26,7 +27,7 @@ def readFile(path):
     file.close()
     return freq, toa, err
 
-path = input("Ingrese el paso de su archivo (con formato): ")
+path = input("Ingrese el paso de su archivo (con formato): ") # /Users/benja_n/Downloads/psr04.tim
 freq, toa, err = readFile(path)
 
 # Intervals are calculated
@@ -38,13 +39,42 @@ intervals = []
 for i in range(1,intervalNumber):
     intervals.append(toa[0]+intervalLenght*i)
 intervals.append(toa[-1])
-
-# Lists to add each time to it's corresponding interval is created
-toaSubIntervals = {}
+# Lists to add each time/frequency based on it's corresponding time interval is created
+t = {}
+f0 = {}
 for i in range(intervalNumber):
-    toaSubIntervals[f'f0_{i}'] = []
-# Each time is added to it's corresponding list
-for i in range(intervals):
-    for elem in toa:
-        if elem < intervals[i]:
-            toaSubIntervals[f'f0_{i}'].append(elem)
+    t[f't_{i}'] = []
+    f0[f'f0_{i}'] = []
+# Each time/frequency is added to it's corresponding list
+for elem in toa:
+    if elem < intervals[0]:
+        t[f't_0'].append(elem)
+        f0[f'f0_0'].append(freq[toa.index(elem)])
+    for i in range(1,len(intervals)):
+        if intervals[i-1] < elem <= intervals[i]:
+            t[f't_{i}'].append(elem)
+            f0[f'f0_{i}'].append(freq[toa.index(elem)])
+print(t,"\n",f0)
+# Derivatives are calculated for each sub-section
+f1 = {}
+for key, value in f0.items():
+    f1[f'f1_{key[3:]}'] = np.gradient(value)
+print(f1)
+# Code if numpy's method isn't apropiated
+"""import sympy as sp
+f1 = {}
+for key, value in f0.items():
+    value_symbols = [sp.symbols(f'x{i}') for i in range(len(value))]
+    value_diff = [sp.diff(val) for val in value_symbols]
+    f1[f'f1_{key[3:]}'] = value_diff"""
+
+# This needs to be fixed since you can't make a plot with a dictionary
+"""fig = plt.figure(figsize=(6,6))
+ax = fig.add_subplot(111)
+ax.plot(toa, f1, linewidth=1, linestyle="--", color="black", alpha=0.5)
+ax.set_title("Glitches detectados para psr04")
+ax.set_xlabel("Tiempo [IDK]")
+ax.set_ylabel("Derivada de la frecuencia")
+ax.legend()
+plt.show()"""
+print("Este es un programa en desarrollo, no considerar sus resultados como válidos.")

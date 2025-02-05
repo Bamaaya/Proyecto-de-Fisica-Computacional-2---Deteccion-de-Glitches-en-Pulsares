@@ -11,27 +11,24 @@ def readFile(path):
     Return:
     - freq (list): list that contains the given pulsar's frequecies
     - toa (list): list that contains the time of arrival of each frequency
-    - err (list): list that contains something that I suspect is the error of one of the two things above
     """
     file = open(path,"r")
     file.readline()
     contentInFile = file.readlines()
     freq = [] # Frequency
     toa = [] # Time of arrival
-    err = [] # Error? I'm not sure
     for line in contentInFile:
         line = line.split()
-        freq.append(float(line[1]))
         toa.append(float(line[2]))
-        err.append(float(line[3]))
+        freq.append(float(line[3]))
     file.close()
-    return freq, toa, err
+    return toa, freq
 
 path = input("Ingrese el paso de su archivo (con formato): ") # /Users/benja_n/Downloads/psr04.tim
-freq, toa, err = readFile(path)
+toa, freq = readFile(path)
 
 # Intervals are calculated
-intervalNumber = int(input("Ingrese la cantidad de intervalos deseados para realizar sub-intervalos de\nfrecuencias (ingrese un número entero positivo): "))
+intervalNumber = int(input("\nIngrese la cantidad de intervalos deseados para realizar sub-intervalos de\nfrecuencias (ingrese un número entero positivo): "))
 toaRange = toa[-1] - toa[0]
 intervalLenght = toaRange/intervalNumber
 # Limits of each interval are determinated
@@ -54,7 +51,7 @@ for elem in toa:
         if intervals[i-1] < elem <= intervals[i]:
             t[f't_{i}'].append(elem)
             f0[f'f0_{i}'].append(freq[toa.index(elem)])
-print(t,"\n",f0)
+print(f"\n{t}\n{f0}\n")
 # Derivatives are calculated for each sub-section
 f1 = {}
 for key, value in f0.items():
@@ -68,13 +65,24 @@ for key, value in f0.items():
     value_diff = [sp.diff(val) for val in value_symbols]
     f1[f'f1_{key[3:]}'] = value_diff"""
 
-# This needs to be fixed since you can't make a plot with a dictionary
-"""fig = plt.figure(figsize=(6,6))
+# Plot of the times for each derivative
+graphicableF1 = []
+valuesInF1 = list(f1.values())
+for i in valuesInF1:
+    for j in i:
+        graphicableF1.append(j)
+graphicableTOA = []
+valuesInT = list(t.values())
+for i in valuesInT:
+    for j in i:
+        graphicableTOA.append(j)
+
+fig = plt.figure(figsize=(6,6))
 ax = fig.add_subplot(111)
-ax.plot(toa, f1, linewidth=1, linestyle="--", color="black", alpha=0.5)
+ax.plot(graphicableTOA, graphicableF1, linewidth=1, linestyle="--", color="black", alpha=0.5)
 ax.set_title("Glitches detectados para psr04")
 ax.set_xlabel("Tiempo [IDK]")
 ax.set_ylabel("Derivada de la frecuencia")
-ax.legend()
-plt.show()"""
-print("Este es un programa en desarrollo, no considerar sus resultados como válidos.")
+plt.show()
+
+print("\nEste es un programa en desarrollo, no considerar sus resultados como válidos.")
